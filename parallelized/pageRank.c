@@ -139,22 +139,15 @@ void calculate_pagerank(float **link_matriz, float rank[], float last_rank[], in
         #pragma omp parallel for
         for (int i = 0; i < n; i++) {
             last_rank[i] = rank[i];
-            // rank[i] = 0.0f;
             rank[i] = (1.0f - damping) / n;
         }
 
         // Cálculo paralelo do PageRank
         #pragma omp parallel for
         for (int i = 0; i < n; i++) {
-
-            float local_rank = 0.0f;
-
             for (int j = 0; j < n; j++) {
-                // local_rank += last_rank[j] * link_matriz[i][j];
                 rank[i] += damping * last_rank[j] * link_matriz[i][j];
             }
-
-            rank[i] = local_rank;
         }
 
         iterations++;

@@ -121,15 +121,12 @@ void calculate_pagerank(float **link_matriz, float rank[], float last_rank[], in
 
         for (int i = 0; i < n; i++) {
             last_rank[i] = rank[i];
-            // rank[i] = 0;
             rank[i] = (1.0f - damping) / n;
         }
 
         // Cálculo do PageRank
-        // ****A paralelização tem que ser feita aqui!!!****
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                // rank[i] += last_rank[j] * link_matriz[i][j];
                 rank[i] += damping * last_rank[j] * link_matriz[i][j];
             }
         }
