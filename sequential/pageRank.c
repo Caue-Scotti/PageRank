@@ -82,9 +82,13 @@ void normalize_matriz(float **matriz, int n) {
             count += matriz[i][j];
         }
 
-        // Evita divisão por zero
-        if (count == 0)
+        // Evita divisão por zero casa a soma da coluna seja zero
+        if (count == 0) {
+            for (int i = 0; i < n; i++) {
+                matriz[i][j] = 1.0f / n;
+            }
             continue;
+        }
 
         for (int i = 0; i < n; i++) {
             matriz[i][j] = matriz[i][j] / count;
@@ -109,23 +113,24 @@ int equals(float rank[], float last_rank[], int n) {
     return 1;
 }
 
-void calculate_pagerank(float **link_matriz,
-                        float rank[],
-                        float last_rank[],
-                        int n) {
+void calculate_pagerank(float **link_matriz, float rank[], float last_rank[], int n) {
+
+    float damping = 0.85f;
 
     while (equals(rank, last_rank, n) == 0) {
 
         for (int i = 0; i < n; i++) {
             last_rank[i] = rank[i];
-            rank[i] = 0;
+            // rank[i] = 0;
+            rank[i] = (1.0f - damping) / n;
         }
 
         // Cálculo do PageRank
         // ****A paralelização tem que ser feita aqui!!!****
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                rank[i] += last_rank[j] * link_matriz[i][j];
+                // rank[i] += last_rank[j] * link_matriz[i][j];
+                rank[i] += damping * last_rank[j] * link_matriz[i][j];
             }
         }
     }
